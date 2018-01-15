@@ -1,5 +1,6 @@
 import re
 import subprocess
+import os
 
 
 class LaTeXReader():
@@ -9,25 +10,20 @@ class LaTeXReader():
 
     def __init__(self, file):
         if not file.endswith(".tex"):
-            file += ".tex"
-        self.filename = file
+            self.new_file_name = file
+            self.new_file_name_tex = file + ".tex"
+        self.filename = "latex_template.tex"
         self.reader()
-        self.question_pattern = "(%question\d)"
-        self.question_pattern_for_last_answer = "(%new_answer_here\d)"
-        with open('answer_template.txt', 'r') as f:
-            self.answer_template = f.read()
-        with open('closed_answer_template.txt', 'r') as f:
+        self.question_pattern = r"(%paste_questions_here\d)"
+        self.answer_pattern = r"(%paste_answers_here\d)"
+        with open('_open_answer_template.txt', 'r') as f:
+            self.open_answer_pattern = f.read()
+        with open('_closed_answer_template.txt', 'r') as f:
             self.closed_answer_template = f.read()
-
-        self.last_answer = re.findall(
-            self.question_pattern_for_last_answer, self.file)[-1]
-        self.last_question_number = len(re.findall(
-            self.question_pattern, self.file))
-        self.next_question_number = self.last_question_number + 1
 
     def writer(self, file):
         try:
-            with open(self.filename, 'w') as f:
+            with open(self.new_file_name_tex, 'w') as f:
                 f.write(file)
         except Exception as e:
             print("Please enter valid .tex file!")
@@ -41,19 +37,24 @@ class LaTeXReader():
             print("Please enter valid .tex file!")
             exit(0)
 
-    def add_questions(self, question):
-        self.last_question = re.findall(self.question_pattern, self.file)[-1]
+    def add_questions(self, number, question):
+        self.last_answer = re.findall(
+            self.answer_pattern, self.file)[-1]
+        self.last_question = re.findall(
+            self.question_pattern, self.file)[-1]
+
         self.new_question = self.last_question + "\n\n" + \
             "\question {0}\n".format(question)
 
-        answer = input("Open or closed typed answers? o/c\n")
+        answer = input("Open or closed typed answers? o/c ")
         if answer == "o":
-
-            self.new_question += r"\n\\begin{solutionorlines}[0.5in]\n" + \
-                r"\\end{solutionorlines}" + "%question" + \
-                str(self.next_question_number)
-            self.new_answer = re.sub('_Number_', str(
-                self.next_question_number), self.answer_template)
+            self.new_question += r"\n\\begin{solutionorlines}[1in]\n" + \
+                r"\\end{solutionorlines}" + r" %paste_questions_here" + \
+                str(number+1)
+            self.new_answer = self.last_answer + re.sub(
+                '_Number_', str(number), self.open_answer_pattern)
+            self.new_answer = re.sub(
+                '_nextNumber_', str(number+1), self.new_answer)
 
         elif answer == "c":
             self.new_question += r"\n\\begin{oneparchoices}"
@@ -63,18 +64,19 @@ class LaTeXReader():
                     self.new_question += "\n" + "\choice {}".format(answer)
                 else:
                     break
-            self.new_answer = self.last_answer + re.sub('_Number_', str(
-                self.next_question_number), self.closed_answer_template)
+            self.new_answer = self.last_answer + \
+                re.sub('_Number_', str(number), self.closed_answer_template)
+            self.new_answer = re.sub('_nextNumber_', str(number+1),
+                                     self.new_answer)
             self.new_question += "\n" + \
-                r"\\end{oneparchoices} %question" + \
-                str(self.next_question_number)
+                r"\\end{oneparchoices} %%paste_questions_here" + \
+                str(number+1)
         else:
             raise Exception
 
         self.file = re.sub(self.last_question, self.new_question, self.file)
         self.file = re.sub(self.last_answer, self.new_answer, self.file)
         self.writer(self.file)
-        self.to_pdf_converter()
 
     def delete_question(self, question):
         question_pattern = r"(\\question)([\s\S]+)(%question{})".format(
@@ -86,24 +88,31 @@ class LaTeXReader():
         pdf_gen = input("Whould you like to generate pdf? Y/N ")
         answers = ['', "YES", "yes", "y", "Y", "Yes"]
         if pdf_gen in answers:
-            cmd = ['pdflatex', '-interaction', 'nonstopmode', self.filename]
+            cmd = ['pdflatex', '-interaction',
+                   'nonstopmode', self.new_file_name]
             proc = subprocess.Popen(cmd)
             proc.communicate()
+            os.remove("{}.aux".format(self.new_file_name))
+            os.remove("{}.log".format(self.new_file_name))
+            os.remove("{}.tex".format(self.new_file_name))
         else:
             exit(0)
 
 
 if __name__ == '__main__':
-    filename = input("Enter a file name: ")
+    filename = input("Enter an end file name: ")
     latex = LaTeXReader(filename)
     answer = input("Do you want to add or delete question? (add/del): ")
     if answer == "add":
-        question = input("Enter your question: ")
-        latex.add_questions(question)
+        answer = int(input("How many questions you want to have? "))
+        for number in range(1, answer+1):
+            question = input("Enter your question {}: ".format(str(number)))
+            latex.add_questions(number, question)
+        latex.to_pdf_converter()
     elif answer == "exit":
         exit(0)
-    elif answer == "del":
-        num = input("Enter number of the answer u want to delete: ")
-        latex.delete_question(num)
+    # elif answer == "del":
+    #     num = input("Enter number of the answer u want to delete: ")
+    #     latex.delete_question(num)
     else:
         print("No such command")

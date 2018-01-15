@@ -1,5 +1,4 @@
 \n
-%begin_answer_Number_
 \\begin{scope}[yshift=-_Number_.5cm]
 		\\draw(-.22,-.35) rectangle(10cm,.9em);
 		\\pgfmathtruncatemacro\\q{(_Number_)}
@@ -7,4 +6,4 @@
 				\\foreach \\count/\\desc in {1/A, 2/B, 3/C, 4/D, 5/E} {
 						\\node[draw,circle,inner sep=1pt] at ({\\count+1 * 0.5},-.05) {\\desc};
 				}
-\\end{scope} %new_answer_here_Number_
+\\end{scope} %paste_answers_here_nextNumber_

@@ -1,6 +1,4 @@
-%new_answer_here_Number_
 \n\n
-%begin_answer_Number_
 \\begin{scope}[yshift=-_Number_.5cm]
         \\draw(-.22,-.35) rectangle(10cm,.9em);
         \\pgfmathtruncatemacro\\q{(_Number_)}
@@ -8,6 +6,6 @@
 \end{scope}
 
 \\begin{scope}[yshift=-_Number_.5cm, xshift=13cm]
-        \\draw(-.22,-.35) rectangle(2cm,.9em); 
+        \\draw(-.22,-.35) rectangle(2cm,.9em);
         \\node at (0,-.05) {\\normalsize{\\q}};
-\\end{scope} %new_answer_here_Number_
+\\end{scope} %paste_answers_here_nextNumber_

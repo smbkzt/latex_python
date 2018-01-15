@@ -25,30 +25,7 @@ for an answer, continue on the back of the page.}}}
 
 \begin{questions}
 
-\question Who is the Steve Jobs?
-
-\begin{oneparchoices}
-\choice Apple CEO
-\choice Dead man
-\choice Legend
-\end{oneparchoices} %question1
-
-\question test2
-
-\begin{solutionorlines}[0.5in]
-\end{solutionorlines}%question2
-
-\question test3
-
-\begin{oneparchoices}
-\choice c
-\choice c
-\choice c
-\choice c
-\choice c
-\end{oneparchoices} %question3
-
-\end{questions}
+%paste_questions_here1
 
 \newpage
 
@@ -117,41 +94,7 @@ for an answer, continue on the back of the page.}}}
 
 \begin{tikzpicture}[font={\sffamily},overlay]
 
-%begin answer1
-\begin{scope}[yshift=-1.5cm]
-		\draw(-.22,-.35) rectangle(10cm,.9em);
-		\pgfmathtruncatemacro\q{(1)}
-		\node at (0,-.05) {\normalsize{\q}};
-				\foreach \count/\desc in {1/A, 2/B, 3/C, 4/D, 5/E} {
-						\node[draw,circle,inner sep=1pt] at ({\count+1 * 0.5},-.05) {\desc};
-				}
-\end{scope} %new_answer_here1
-
-
-
-%begin_answer2
-\begin{scope}[yshift=-2.5cm]
-        \draw(-.22,-.35) rectangle(10cm,.9em);
-        \pgfmathtruncatemacro\q{(2)}
-        \node at (0,-.05) {\normalsize{\q}};
-\end{scope}
-
-\begin{scope}[yshift=-2.5cm, xshift=13cm]
-        \draw(-.22,-.35) rectangle(2cm,.9em);
-        \node at (0,-.05) {\normalsize{\q}};
-\end{scope} %new_answer_here2
-
-%begin_answer3
-\begin{scope}[yshift=-3.5cm]
-		\draw(-.22,-.35) rectangle(10cm,.9em);
-		\pgfmathtruncatemacro\q{(3)}
-		\node at (0,-.05) {\normalsize{\q}};
-				\foreach \count/\desc in {1/A, 2/B, 3/C, 4/D, 5/E} {
-						\node[draw,circle,inner sep=1pt] at ({\count+1 * 0.5},-.05) {\desc};
-				}
-\end{scope} %new_answer_here3
-
-
+%paste_answers_here1
 
 
 \end{tikzpicture}
